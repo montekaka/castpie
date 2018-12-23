@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node server/app.js",
     "dev": "nodemon --exec node server/app.js",
+    "react-dev": "webpack -d --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
