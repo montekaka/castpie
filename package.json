@@ -20,7 +20,16 @@
     "lodash": "^4.17.11",
     "morgan": "^1.9.1",
     "node-html-parser": "^1.1.11",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0",
     "rss-parser": "^3.6.0",
     "underscore": "^1.9.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.2.3",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.4",
+    "webpack": "^4.28.2"
   }
 }
