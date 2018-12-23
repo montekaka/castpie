@@ -1,0 +1,26 @@
+{
+  "name": "polly",
+  "version": "1.0.0",
+  "description": "Convert Articles To Audio",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server/app.js",
+    "dev": "nodemon --exec node server/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.382.0",
+    "axios": "^0.18.0",
+    "bluebird": "^3.5.3",
+    "body-parser": "^1.18.3",
+    "dotenv": "^6.2.0",
+    "express": "^4.16.4",
+    "lodash": "^4.17.11",
+    "morgan": "^1.9.1",
+    "node-html-parser": "^1.1.11",
+    "rss-parser": "^3.6.0",
+    "underscore": "^1.9.1"
+  }
+}
