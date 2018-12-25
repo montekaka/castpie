@@ -25,7 +25,8 @@ class SbListItem extends React.Component {
     const data = {title: this.state.title, text: this.state.text, outputFormat: 'mp3', voiceId: 'Kimberly'};
     axios.post('/api/article', data)
     .then((res) => {
-      console.log(res)
+      //console.log(res)
+      window.open(res.data);
     }).catch((err) => {
       console.log(err)
     })
