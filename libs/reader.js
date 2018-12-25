@@ -2,22 +2,17 @@ const Parser = require('rss-parser');
 const htmlParse = require('node-html-parser');
 const AWS = require('aws-sdk');
 const fs = require('fs');
+const Promise = require('bluebird');
 
 let parser = new Parser();
 const parse = htmlParse.parse;
-
-// let params = {
-//   'OutputFormat': 'mp3',
-//   'VoiceId': 'Kimberly'
-// }
+// Create an Polly client
+const Polly = new AWS.Polly({
+  signatureVersion: 'v4',
+  region: 'us-east-1'
+});
 
 const pollyPromise = (params) => {
-  // Create an Polly client
-  const Polly = new AWS.Polly({
-    signatureVersion: 'v4',
-    region: 'us-east-1'
-  });
-
   return new Promise((resolve, reject) => {
     Polly.synthesizeSpeech(params, (err, data) => {
       if (err) {
@@ -53,12 +48,6 @@ const mergeFilesPromise = (files, filename) => {
   })
 }
 
-const rss = (feedUrl, cb) => {
-  parser.parseURL(feedUrl, (err, feed) => {
-    cb(feed);
-  })
-}
-
 const getBuckets = (text) => {
   // 3,000 characters limit
   // default k = 100 words per bucket
@@ -80,22 +69,52 @@ const getBuckets = (text) => {
   return buckets;
 }
 
-const getArticle = (url, articleNumber, cb) => {
-  rss(url, (feed) => {   
-    let text = getBuckets(feed.items[articleNumber]['content:encoded']);
-    let result = {
-      item: feed.items[articleNumber],
-      summaryText: text
-    }; 
-    cb(result)
+const getBucketFiles = (text, title, baseParams) => {
+  const document = getBuckets(text);
+  const randomNum = Math.floor(Math.random() * 100) + 2;
+
+  var files = [];
+  for(var i = 0; i < document.length; i++) {
+    const fileText = document[i];
+    let params = {
+      'Text': fileText,
+      'OutputFormat': baseParams.OutputFormat,
+      'VoiceId': baseParams.VoiceId
+    }
+    let filename = `./tmp/${title}${randomNum}${i+1}.mp3`
+    let file = {params: params, filename: filename};
+    files.push(file);
+  }
+
+  return files;
+}
+
+const getArticlesPromise = (url) => {
+  return new Promise((resolve, reject) => {
+    parser.parseURL(url, (err, feed) => {
+      if (err) {
+        reject(err);
+      }
+      resolve(feed);
+    })
+  })
+}
+
+const removeFilesPromise = (files) => {
+  return Promise.map(files, (file) => {
+    fs.unlinkSync(file);
+  }, {
+    concurrency: 4
+  }).then(() => {
+    return true
   })
 }
 
 module.exports = {
-  rssReader: rss,
-  getBuckets: getBuckets,
-  getArticle: getArticle,
   pollyPromise: pollyPromise,
   saveFilePromise: saveFilePromise,
-  mergeFilesPromise: mergeFilesPromise
+  mergeFilesPromise: mergeFilesPromise,
+  getArticlesPromise: getArticlesPromise,
+  removeFilesPromise: removeFilesPromise,
+  getBucketFiles: getBucketFiles
 };
