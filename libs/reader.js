@@ -5,12 +5,22 @@ const fs = require('fs');
 const Promise = require('bluebird');
 
 let parser = new Parser();
+const result_url = 'https://pollyaudio.sfo2.digitaloceanspaces.com';
 const parse = htmlParse.parse;
 // Create an Polly client
 const Polly = new AWS.Polly({
   signatureVersion: 'v4',
   region: 'us-east-1'
 });
+
+// Configure client for use with Spaces
+const spacesEndpoint = new AWS.Endpoint('sfo2.digitaloceanspaces.com');
+const s3 = new AWS.S3({
+  endpoint: spacesEndpoint,
+  accessKeyId: 'LZKHCGZCLUZDAE4FDSIZ',
+  secretAccessKey: 'o796Lc6+Wt2+LkXEYhjXnfOTMqtBLNJQEYGkmEXPhOk'
+});
+
 
 const pollyPromise = (params) => {
   return new Promise((resolve, reject) => {
@@ -110,11 +120,56 @@ const removeFilesPromise = (files) => {
   })
 }
 
+const removeFilePromise = (file) => {
+  return new Promise((resolve, reject) => {
+    fs.unlink(file, (err) => {
+      if (err) {
+        reject(err);
+      }
+      resolve(`${file} was deleted`);
+    })
+  })
+}
+
+const readFilePromise = (file, filename) => {
+  return new Promise((resolve, reject) => {
+    fs.readFile(file, (err, data) => {
+      if(err) {
+        reject(err);
+      }
+      var base64data = Buffer.from(data, 'binary');
+      var params = {
+        Body: base64data,
+        Bucket: 'pollyaudio',
+        Key: filename,
+        ACL: 'public-read'
+      }      
+      resolve(params);
+    })
+  })
+}
+
+const uploadFileToDOPromise = (file, filename) => {
+  return readFilePromise(file, filename).then((params) => {
+    const putObjectPromise = s3.putObject(params).promise();
+    return putObjectPromise.then((data) => {
+      return  `${result_url}/${filename}`;
+    }).catch((err) => {
+      return err;
+    })
+  })
+  .catch((err) => {
+    return err;
+  })
+}
+
 module.exports = {
   pollyPromise: pollyPromise,
   saveFilePromise: saveFilePromise,
   mergeFilesPromise: mergeFilesPromise,
   getArticlesPromise: getArticlesPromise,
   removeFilesPromise: removeFilesPromise,
+  uploadFileToDOPromise: uploadFileToDOPromise,
+  removeFilePromise: removeFilePromise,
   getBucketFiles: getBucketFiles
 };
