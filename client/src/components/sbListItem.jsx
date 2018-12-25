@@ -1,6 +1,5 @@
 import React from 'react';
 import axios from 'axios';
-import { ListGroupItem } from 'reactstrap';
 
 class SbListItem extends React.Component {
   constructor(props) {
@@ -36,10 +35,16 @@ class SbListItem extends React.Component {
 
   render() {
     return(
-      <ListGroupItem>
-        {this.state.title}
-        <div onClick={this.handleClick}>Click</div>
-      </ListGroupItem>
+      <li className="media list-group-item p-4">
+        <div className="media-body">
+          <div className="media-heading">
+            <small className="float-right text-muted">{this.props.item.pubDate}</small>
+            <h6>{this.state.title}</h6>
+          </div>
+          <p></p>
+          <button className="btn btn-outline-primary btn-sm" onClick={this.handleClick}>Download</button>
+        </div>        
+      </li>
     )
   }
 }
