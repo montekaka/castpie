@@ -28,7 +28,7 @@ class Main extends React.Component {
     const data = {url: this.state.rss};
     axios.post('/api/articles', data)
     .then((res) => {
-      this.setState({items:  res.data.items});
+      this.setState({items: res.data.items});
     }).catch((err) => {
       console.log(err)
     })
