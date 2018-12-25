@@ -1,6 +1,7 @@
 const controller = require('./controllers');
 const router = require('express').Router();
 
-router.get('/api/articles', controller.articles.get);
+router.post('/api/articles', controller.articles.post);
+router.post('/api/article', controller.article.post);
 
 module.exports = router;
