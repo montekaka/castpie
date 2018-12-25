@@ -35,8 +35,18 @@ module.exports = {
     .then(() => {
       return reader.removeFilesPromise(savedFiles);
     })
-    .then(() => {
-      res.send()
+    .then(() => {      
+      return reader.uploadFileToDOPromise(finalFilename, `${title}.mp3`)
+    })
+    .then((data) => {
+      res.send(data)
+      return reader.removeFilePromise(finalFilename).then(() => {
+        console.log('deleted file')  
+      })
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500)
     })
   }
 }
