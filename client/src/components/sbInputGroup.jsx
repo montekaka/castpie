@@ -10,7 +10,7 @@ import {
    return (
      <div>
       <InputGroup>
-        <Input type="text" value={props.inputValue} name={props.inputName} onChange={props.handleChange}/>
+        <Input type="text" placeholder={'Enter a RSS feed here to get started'} value={props.inputValue} name={props.inputName} onChange={props.handleChange}/>
         <InputGroupAddon addonType="prepend" onClick={props.handleClick}><Button>Go</Button></InputGroupAddon>
       </InputGroup>
      </div>
