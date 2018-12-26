@@ -1,12 +1,11 @@
-const Parser = require('rss-parser');
-const htmlParse = require('node-html-parser');
 const AWS = require('aws-sdk');
 const fs = require('fs');
 const Promise = require('bluebird');
+const reader = require('./reader');
 
-let parser = new Parser();
+const getBuckets = reader.getBuckets;
+
 const result_url = 'https://pollyaudio.sfo2.digitaloceanspaces.com';
-const parse = htmlParse.parse;
 // Create an Polly client
 const Polly = new AWS.Polly({
   signatureVersion: 'v4',
@@ -56,27 +55,6 @@ const mergeFilesPromise = (files, filename) => {
     });
     resolve(filename);
   })
-}
-
-const getBuckets = (text) => {
-  // 3,000 characters limit
-  // default k = 100 words per bucket
-  let document = parse(text).text.toString();
-  let words = document.split(' ');
-  var buckets = [];
-  var _bucket = [];
-  for(var i = 0; i < words.length; i++) {
-    if(i % 100 === 0 && i > 0) {
-      let paragraph = _bucket.join(' ');
-      buckets.push(paragraph);
-    }        
-    if(i % 100 === 0) {
-      _bucket = [];
-    }
-    _bucket.push(words[i]);
-  }  
-  buckets.push(_bucket.join(' '));
-  return buckets;
 }
 
 const getBucketFiles = (text, title, baseParams) => {
