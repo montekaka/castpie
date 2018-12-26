@@ -1,3 +1,11 @@
 node_modules
 tmp
 .env
+
+# Compiled Dirs (http://nodejs.org/api/addons.html)
+build/
+/dist/bundle.js
+
+# Logs
+logs
+*.log

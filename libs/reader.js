@@ -1,62 +1,29 @@
 const Parser = require('rss-parser');
+const Promise = require('bluebird');
 const htmlParse = require('node-html-parser');
-const AWS = require('aws-sdk');
-const fs = require('fs');
 
 let parser = new Parser();
 const parse = htmlParse.parse;
 
-// let params = {
-//   'OutputFormat': 'mp3',
-//   'VoiceId': 'Kimberly'
-// }
+const getArticlesPromise = (url) => {
+  return new Promise((resolve, reject) => {
+    parser.parseURL(url, (err, feed) => {
+      if (err) {
+        reject(err);
+      }
+      resolve(feed);
+    })
+  })
+}
 
-const pollyPromise = (params) => {
-  // Create an Polly client
-  const Polly = new AWS.Polly({
-    signatureVersion: 'v4',
-    region: 'us-east-1'
+const getImages = (text) => {
+  const imgs = parse(text).querySelectorAll('img');
+  let images = imgs.map((img) => {
+    if(img) {
+      return {src: img.attributes.src, 'data-width':img.attributes.width, 'data-height':img.attributes.height}
+    }    
   });
-
-  return new Promise((resolve, reject) => {
-    Polly.synthesizeSpeech(params, (err, data) => {
-      if (err) {
-        reject(err)
-      } else if (data) {
-        if (data.AudioStream instanceof Buffer) {
-          resolve(data.AudioStream);
-        }
-      }
-    })
-  })
-};
-
-const saveFilePromise = (audioStream, filename) => {
-  return new Promise((resolve, reject) => {
-    fs.writeFile(filename, audioStream, (err) => {
-      if (err) {
-        reject(err)
-      }
-      resolve(filename)
-    })
-  })
-}
-
-const mergeFilesPromise = (files, filename) => {
-  return new Promise((resolve, reject) => {
-    fs.writeFileSync(filename);
-    files.forEach((file) => {
-      let readfile = fs.readFileSync(file.filename);
-      fs.appendFileSync(filename, readfile);
-    });
-    resolve(filename);
-  })
-}
-
-const rss = (feedUrl, cb) => {
-  parser.parseURL(feedUrl, (err, feed) => {
-    cb(feed);
-  })
+  return images;
 }
 
 const getBuckets = (text) => {
@@ -80,22 +47,8 @@ const getBuckets = (text) => {
   return buckets;
 }
 
-const getArticle = (url, articleNumber, cb) => {
-  rss(url, (feed) => {   
-    let text = getBuckets(feed.items[articleNumber]['content:encoded']);
-    let result = {
-      item: feed.items[articleNumber],
-      summaryText: text
-    }; 
-    cb(result)
-  })
-}
-
 module.exports = {
-  rssReader: rss,
+  getArticlesPromise: getArticlesPromise,
   getBuckets: getBuckets,
-  getArticle: getArticle,
-  pollyPromise: pollyPromise,
-  saveFilePromise: saveFilePromise,
-  mergeFilesPromise: mergeFilesPromise
+  getImages: getImages
 };
