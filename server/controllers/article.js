@@ -1,4 +1,4 @@
-const reader = require('./../../libs/reader');
+const pollytalk = require('./../../libs/pollytalk');
 const Promise = require('bluebird');
 const _ = require('underscore');
 
@@ -11,11 +11,11 @@ module.exports = {
       'OutputFormat': req.body['outputFormat'],
       'VoiceId': req.body['voiceId']
     }
-    const files = reader.getBucketFiles(req.body['text'], title, baseParams);
+    const files = pollytalk.getBucketFiles(req.body['text'], title, baseParams);
     let savedFiles = _.map(files, (file) => {return file.filename});
     Promise.map(files, (file) => {      
-      return reader.pollyPromise(file.params).then((audioStream) => {
-        return reader.saveFilePromise(audioStream, file.filename)
+      return pollytalk.pollyPromise(file.params).then((audioStream) => {
+        return pollytalk.saveFilePromise(audioStream, file.filename)
       })
       .then((savedFileName) => {
         console.log(savedFileName)
@@ -30,17 +30,17 @@ module.exports = {
       return files
     })
     .then((files) => {
-      return reader.mergeFilesPromise(files, finalFilename);
+      return pollytalk.mergeFilesPromise(files, finalFilename);
     })
     .then(() => {
-      return reader.removeFilesPromise(savedFiles);
+      return pollytalk.removeFilesPromise(savedFiles);
     })
     .then(() => {      
-      return reader.uploadFileToDOPromise(finalFilename, `${title}.mp3`)
+      return pollytalk.uploadFileToDOPromise(finalFilename, `${title}.mp3`)
     })
     .then((data) => {
       res.send(data)
-      return reader.removeFilePromise(finalFilename).then(() => {
+      return pollytalk.removeFilePromise(finalFilename).then(() => {
         console.log('deleted file')  
       })
     })
