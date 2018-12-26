@@ -32,9 +32,7 @@ class SbListItem extends React.Component {
       console.log(err)
     })
   }
-
-
-
+  
   render() {
     return(
       <li className="media list-group-item p-4">
