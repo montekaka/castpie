@@ -9,6 +9,9 @@ class Main extends React.Component {
     super(props);
     this.state = {
       rss: '',
+      title: null,
+      imageUrl: null,
+      description: null,
       items: []
     }
 
@@ -28,8 +31,13 @@ class Main extends React.Component {
     // console.log(this.state.rss)
     const data = {url: this.state.rss};
     axios.post('/api/articles', data)
-    .then((res) => {
-      this.setState({items: res.data.items});
+    .then((res) => {      
+      this.setState({
+        title: res.data.title,
+        imageUrl: res.data.image.url,
+        description: res.data.description,
+        items: res.data.items
+      });
     }).catch((err) => {
       console.log(err)
     })
