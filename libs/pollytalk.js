@@ -2,10 +2,11 @@ const AWS = require('aws-sdk');
 const fs = require('fs');
 const Promise = require('bluebird');
 const reader = require('./reader');
+const dotenv = require('dotenv');
 
 const getBuckets = reader.getBuckets;
+dotenv.config();
 
-const result_url = 'https://pollyaudio.sfo2.digitaloceanspaces.com';
 // Create an Polly client
 const Polly = new AWS.Polly({
   signatureVersion: 'v4',
@@ -13,13 +14,22 @@ const Polly = new AWS.Polly({
 });
 
 // Configure client for use with Spaces
+
+let accessKeyId = ''
+let secretAccessKey = ''
+if( process.env.NODE_ENV === 'development') {
+  accessKeyId = process.env.pollyreader;
+  secretAccessKey = process.env.Secret;
+}
+
+const result_url = 'https://pollyaudio.sfo2.digitaloceanspaces.com';
 const spacesEndpoint = new AWS.Endpoint('sfo2.digitaloceanspaces.com');
+
 const s3 = new AWS.S3({
   endpoint: spacesEndpoint,
-  accessKeyId: 'LZKHCGZCLUZDAE4FDSIZ',
-  secretAccessKey: 'o796Lc6+Wt2+LkXEYhjXnfOTMqtBLNJQEYGkmEXPhOk'
+  accessKeyId: accessKeyId,
+  secretAccessKey: secretAccessKey
 });
-
 
 const pollyPromise = (params) => {
   return new Promise((resolve, reject) => {
