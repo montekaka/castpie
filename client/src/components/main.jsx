@@ -3,6 +3,7 @@ import axios from 'axios';
 import SbNavBar from './sbNavbar.jsx';
 import SbInputGroup from './sbInputGroup.jsx';
 import SbList from './sbList.jsx';
+import SbCard from './sbCard.jsx';
 
 class Main extends React.Component {
   constructor(props) {
@@ -31,13 +32,17 @@ class Main extends React.Component {
     // console.log(this.state.rss)
     const data = {url: this.state.rss};
     axios.post('/api/articles', data)
-    .then((res) => {      
-      this.setState({
-        title: res.data.title,
-        imageUrl: res.data.image.url,
-        description: res.data.description,
-        items: res.data.items
-      });
+    .then((res) => {    
+      const data = res.data;
+      if(data.title) { this.setState({title: data.title})}
+      if(data.image) {
+        this.setState({imageUrl: data.image.url})
+      } else {
+        // default
+        // this.setState({imageUrl: data.image.url})
+      }
+      if(data.description) { this.setState({description: data.description})}
+      if(data.items) { this.setState({items: data.items})}
     }).catch((err) => {
       console.log(err)
     })
@@ -49,7 +54,9 @@ class Main extends React.Component {
         <SbNavBar></SbNavBar>
         <div className="container pt-4 pb-5">
           <div className="row">
-            <div className="col-lg-3"></div>
+            <div className="col-lg-3">
+              <SbCard title={this.state.title} imageUrl={this.state.imageUrl} description={this.state.description}/>
+            </div>
             <div className="col-lg-6">
               <SbInputGroup inputName='rss' inputValue={this.state.rss} handleChange={this.handleInputChange} handleClick={this.handleSubmitRSS}/>
               <SbList items={this.state.items}/>
