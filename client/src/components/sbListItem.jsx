@@ -41,8 +41,8 @@ class SbListItem extends React.Component {
             <small className="float-right text-muted">{this.props.item.pubDate}</small>
             <h6>{this.state.title}</h6>
           </div>
-          <SbListItemParagraph text={this.state.text}/>
           <button className="btn btn-outline-primary btn-sm" onClick={this.handleClick}>Download and listen full article</button>
+          <SbListItemParagraph text={this.state.text}/>          
           <SbListItemImages text={this.state.text}/>          
         </div>        
       </li>
