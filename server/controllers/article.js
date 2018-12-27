@@ -4,9 +4,10 @@ const _ = require('underscore');
 
 module.exports = {
   post: (req, res) => {
-    const title = req.body['title'];    
+    const mergedFileName = req.body['title'];
+    const title = encodeURIComponent(req.body['title']);    
     const randomNum = Math.floor(Math.random() * 100) + 2;
-    let finalFilename = `./tmp/${title}${randomNum}.mp3`;
+    let finalFilename = `./tmp/${encodeURIComponent(title)}${randomNum}.mp3`;
     const baseParams = {
       'OutputFormat': req.body['outputFormat'],
       'VoiceId': req.body['voiceId']
@@ -36,7 +37,7 @@ module.exports = {
       return pollytalk.removeFilesPromise(savedFiles);
     })
     .then(() => {      
-      return pollytalk.uploadFileToDOPromise(finalFilename, `${title}.mp3`)
+      return pollytalk.uploadFileToDOPromise(finalFilename, `${mergedFileName}.mp3`)
     })
     .then((data) => {
       res.send(data)
