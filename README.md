@@ -13,3 +13,9 @@ At any moment, you can check running Docker containers by typing:
 
 Finally, you can stop the container from running by:
 `docker stop {container-id}`
+
+Delete image
+`docker rmi {image-id}`
+
+Delete linked container
+`docker rm {container-id}`
