@@ -4,7 +4,7 @@ const _ = require('underscore');
 
 module.exports = {
   post: (req, res) => {
-    const mergedFileName = req.body['title'];
+    const mergedFileName = req.body['title'].split('/').join(" ");
     const title = encodeURIComponent(req.body['title']);    
     const randomNum = Math.floor(Math.random() * 100) + 2;
     let finalFilename = `./tmp/${encodeURIComponent(title)}${randomNum}.mp3`;
