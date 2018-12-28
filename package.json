@@ -10,7 +10,11 @@
     "build": "webpack --mode production",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/montekaka/castpie.git"
+  },
+  "author": "josh chen",  
   "license": "ISC",
   "dependencies": {
     "aws-sdk": "^2.382.0",
