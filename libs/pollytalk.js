@@ -14,15 +14,15 @@ const Polly = new AWS.Polly({
 });
 
 // Configure client for use with Spaces
-let accessKeyId = process.env.pollyreader;
-let secretAccessKey = process.env.Secret;
+// let accessKeyId = process.env.pollyreader;
+// let secretAccessKey = process.env.Secret;
 
 // let accessKeyId = ''
 // let secretAccessKey = ''
-// if( process.env.NODE_ENV === 'development') {
-//   accessKeyId = process.env.pollyreader;
-//   secretAccessKey = process.env.Secret;
-// }
+if( process.env.NODE_ENV === 'development') {
+  accessKeyId = process.env.pollyreader;
+  secretAccessKey = process.env.Secret;
+}
 
 const result_url = 'https://pollyaudio.sfo2.digitaloceanspaces.com';
 const spacesEndpoint = new AWS.Endpoint('sfo2.digitaloceanspaces.com');
