@@ -143,6 +143,7 @@ const uploadFileToDOPromise = (file, filename) => {
   return readFilePromise(file, filename).then((params) => {
     const putObjectPromise = s3.putObject(params).promise();
     return putObjectPromise.then((data) => {
+      console.log(`copied to ${result_url}/${filename}`)
       return  `${result_url}/${filename}`;
     }).catch((err) => {
       return err;

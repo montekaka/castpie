@@ -40,7 +40,7 @@ module.exports = {
       return pollytalk.uploadFileToDOPromise(finalFilename, `${mergedFileName}.mp3`)
     })
     .then((data) => {
-      res.send(data)
+      res.send(data);
       return pollytalk.removeFilePromise(finalFilename).then(() => {
         console.log('deleted file')  
       })
