@@ -7,7 +7,7 @@ To build the app
 Running a Docker Container
 `docker images`
 
-`docker run -it --rm -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -p 80:3000 pollycast`
+`docker run -it --rm -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e pollyreader=$DO_SPACES_ACCESS_KEY_ID -e Secret=$DO_SECRET_ACCESS_KEY  -p 80:3000 pollycast`
 
 `-e accessKeyId=$DO_SPACES_ACCESS_KEY_ID -e secretAccessKey=$DO_SECRET_ACCESS_KEY`
 

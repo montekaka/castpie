@@ -16,7 +16,6 @@ const Polly = new AWS.Polly({
 // Configure client for use with Spaces
 let accessKeyId = process.env.pollyreader;
 let secretAccessKey = process.env.Secret;
-
 // let accessKeyId = ''
 // let secretAccessKey = ''
 // if( process.env.NODE_ENV === 'development') {
