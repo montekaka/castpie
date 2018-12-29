@@ -1,5 +1,4 @@
 node_modules
-tmp
 .env
 
 # Compiled Dirs (http://nodejs.org/api/addons.html)

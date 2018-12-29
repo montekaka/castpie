@@ -22,7 +22,7 @@ module.exports = {
         console.log(savedFileName)
       })
       .catch((err) => {
-        console.log(err);
+        console.log('polly error', err);
       },{
         concurrency: 4
       });      
