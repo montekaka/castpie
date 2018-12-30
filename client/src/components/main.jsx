@@ -49,13 +49,17 @@ class Main extends React.Component {
   }
 
   render() {
+    let titleCard;
+    if (this.state.title) {
+      titleCard = <SbCard title={this.state.title} imageUrl={this.state.imageUrl} description={this.state.description}/>
+    }
     return (
       <div>
         <SbNavBar></SbNavBar>
         <div className="container pt-4 pb-5">
           <div className="row">
             <div className="col-lg-3">
-              <SbCard title={this.state.title} imageUrl={this.state.imageUrl} description={this.state.description}/>
+              {titleCard}
             </div>
             <div className="col-lg-6">
               <SbInputGroup inputName='rss' inputValue={this.state.rss} handleChange={this.handleInputChange} handleClick={this.handleSubmitRSS}/>
