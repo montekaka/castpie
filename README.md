@@ -36,4 +36,4 @@ Delete image
 Delete linked container
 `docker rm {container-id}`
 
-[logo]: https://pollyaudio.sfo2.digitaloceanspaces.com/assets/assets/castpie.gif
+[demo]: https://pollyaudio.sfo2.digitaloceanspaces.com/assets/assets/castpie.gif
