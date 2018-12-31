@@ -23,6 +23,18 @@ class Main extends React.Component {
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmitRSS = this.handleSubmitRSS.bind(this);
     this.modalDownloadClickedToggle = this.modalDownloadClickedToggle.bind(this);
+    this.resetHandler = this.resetHandler.bind(this);
+  }
+
+  resetHandler() {
+    this.setState({
+      rss: '',
+      title: null,
+      imageUrl: null,
+      description: null,
+      items: [],
+      modalDownloadClicked: false  
+    })
   }
 
   handleInputChange(event){
@@ -67,7 +79,7 @@ class Main extends React.Component {
 
     return (
       <div>
-        <SbNavBar></SbNavBar>
+        <SbNavBar resetHandler={this.resetHandler}></SbNavBar>
         <div className="container pt-4 pb-5">
           <div className="row">
             <div className="col-lg-3">

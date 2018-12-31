@@ -15,13 +15,18 @@ class SbNavbar extends React.Component {
       collapsed: true
     }
     this.toggleNavbar = this.toggleNavbar.bind(this);
+    this.handleHomeClick = this.handleHomeClick.bind(this);
   }
 
   toggleNavbar() {
     this.setState({
       collapsed: !this.state.collapsed
     });
-  }	
+  }
+
+  handleHomeClick() {    
+    this.props.resetHandler();
+  }
 
   render() {
     return (
@@ -29,8 +34,8 @@ class SbNavbar extends React.Component {
         <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
         <Collapse isOpen={!this.state.collapsed} navbar>
           <Nav navbar>
-            <NavItem>
-              <NavLink>Home</NavLink>
+            <NavItem onClick={this.handleHomeClick}>
+              <NavLink >Home</NavLink>
             </NavItem>
           </Nav>
         </Collapse>
