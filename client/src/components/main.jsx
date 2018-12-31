@@ -4,6 +4,7 @@ import SbNavBar from './sbNavbar.jsx';
 import SbInputGroup from './sbInputGroup.jsx';
 import SbList from './sbList.jsx';
 import SbCard from './sbCard.jsx';
+import SbModal from './sbModal.jsx';
 
 class Main extends React.Component {
   constructor(props) {
@@ -13,11 +14,15 @@ class Main extends React.Component {
       title: null,
       imageUrl: null,
       description: null,
-      items: []
+      items: [],
+      modalDownloadClicked: false,
+      modalMessageDownloadClicked: 'Please wait a bit for us to convert your article into audio.',
+      modalTitleDownloadClicked: 'Converting'
     }
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmitRSS = this.handleSubmitRSS.bind(this);
+    this.modalDownloadClickedToggle = this.modalDownloadClickedToggle.bind(this);
   }
 
   handleInputChange(event){
@@ -26,6 +31,11 @@ class Main extends React.Component {
     this.setState({
       [name]: value
     });
+  }
+
+  modalDownloadClickedToggle() {
+    // we should change this to higher order function
+    this.setState({modalDownloadClicked: !this.state.modalDownloadClicked})
   }
 
   handleSubmitRSS(){
@@ -50,9 +60,11 @@ class Main extends React.Component {
 
   render() {
     let titleCard;
+
     if (this.state.title) {
       titleCard = <SbCard title={this.state.title} imageUrl={this.state.imageUrl} description={this.state.description}/>
     }
+
     return (
       <div>
         <SbNavBar></SbNavBar>
@@ -63,11 +75,12 @@ class Main extends React.Component {
             </div>
             <div className="col-lg-6">
               <SbInputGroup inputName='rss' inputValue={this.state.rss} handleChange={this.handleInputChange} handleClick={this.handleSubmitRSS}/>
-              <SbList items={this.state.items}/>
+              <SbList items={this.state.items} modalDownloadClickedToggle={this.modalDownloadClickedToggle}/>
             </div>
             <div className="col-lg-3"></div>
           </div>
-        </div>        
+        </div>
+        <SbModal modal={this.state.modalDownloadClicked} toggle={this.modalDownloadClickedToggle} title={this.state.modalTitleDownloadClicked}  message={this.state.modalMessageDownloadClicked}/>        
       </div>
     )
   }
