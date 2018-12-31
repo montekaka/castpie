@@ -1,4 +1,14 @@
+# Castpie
+Converts article to audio using [AWS Polly](https://aws.amazon.com/polly/)
 
+## Introduction
+I build this service for myself.  I subscribed to Ben Thompson's daily update [Stratechery](https://stratechery.com/).  I found myself don't have time to read it everyday, even though, they are all well written.  I live in Los Angeles, CA, and everyday, I spend 2 hours on commute.  It will be great that I can listen to his articles while I'm driving.
+
+To get started, you simply enter a rss feed, and choose the blogpost you wish to listen.  The article will be converted into audio (.mp3 format) in few seconds.
+
+## Tech
+1. [AWS Polly](https://aws.amazon.com/polly/)
+2. [Digital Ocean](https://www.digitalocean.com/)
 
 ## Docker
 To build the app
