@@ -16,14 +16,18 @@ class Main extends React.Component {
       description: null,
       items: [],
       modalDownloadClicked: false,
-      modalMessageDownloadClicked: 'Please wait a bit for us to convert your article into audio.',
-      modalTitleDownloadClicked: 'Converting'
+      modalDownloadMessage: 'Please wait a bit for us to convert your article into audio.',
+      modalDownloadTitle: 'Converting',
+      modalErrorClicked: false,
+      modalErrorMessage: 'Please make sure you enter a RSS feed.',
+      modalErrorTitle: 'Error'
     }
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmitRSS = this.handleSubmitRSS.bind(this);
     this.modalDownloadClickedToggle = this.modalDownloadClickedToggle.bind(this);
-    this.resetHandler = this.resetHandler.bind(this);
+    this.modalErrorClickedToggle = this.modalErrorClickedToggle.bind(this);
+    this.resetHandler = this.resetHandler.bind(this);    
   }
 
   resetHandler() {
@@ -33,7 +37,8 @@ class Main extends React.Component {
       imageUrl: null,
       description: null,
       items: [],
-      modalDownloadClicked: false  
+      modalDownloadClicked: false,
+      modalErrorClicked: false
     })
   }
 
@@ -47,7 +52,11 @@ class Main extends React.Component {
 
   modalDownloadClickedToggle() {
     // we should change this to higher order function
-    this.setState({modalDownloadClicked: !this.state.modalDownloadClicked})
+    this.setState({modalDownloadClicked: !this.state.modalDownloadClicked});
+  }
+
+  modalErrorClickedToggle() {
+    this.setState({modalErrorClicked: !this.state.modalErrorClicked});
   }
 
   handleSubmitRSS(){
@@ -66,7 +75,9 @@ class Main extends React.Component {
       if(data.description) { this.setState({description: data.description})}
       if(data.items) { this.setState({items: data.items})}
     }).catch((err) => {
-      console.log(err)
+      // error modal
+      this.modalErrorClickedToggle();
+      // console.log(err)
     })
   }
 
@@ -92,7 +103,8 @@ class Main extends React.Component {
             <div className="col-lg-3"></div>
           </div>
         </div>
-        <SbModal modal={this.state.modalDownloadClicked} toggle={this.modalDownloadClickedToggle} title={this.state.modalTitleDownloadClicked}  message={this.state.modalMessageDownloadClicked}/>        
+        <SbModal modal={this.state.modalDownloadClicked} toggle={this.modalDownloadClickedToggle} title={this.state.modalDownloadTitle}  message={this.state.modalDownloadMessage}/>
+        <SbModal modal={this.state.modalErrorClicked} toggle={this.modalErrorClickedToggle} title={this.state.modalErrorTitle}  message={`${this.state.modalErrorMessage} This is not a RSS feed: ${this.state.rss}`}/>
       </div>
     )
   }

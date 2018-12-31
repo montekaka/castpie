@@ -24,9 +24,6 @@ class SbListItem extends React.Component {
   }
 
   handleClick() {
-    // 1. open the modal, telling user we are working to convert the article to audio
-    // 2. make a post request
-    // 3. close the modal, and download the file
     this.props.modalDownloadClickedToggle();
     this.post();
   }
@@ -42,15 +39,14 @@ class SbListItem extends React.Component {
       console.log(err)
     })    
   }
-  //<a href="path_to_file" download="proposed_file_name">Download</a>
-
+  
   render() {
 
     let downloadButton;
     if (this.state.downloadUrl.length > 0) {
       downloadButton = <a className="btn btn-primary btn-sm" href={this.state.downloadUrl}>Ready to download</a>
     } else {
-      downloadButton = <button className="btn btn-outline-primary btn-sm" onClick={this.handleClick}>convert the article</button>
+      downloadButton = <button className="btn btn-outline-primary btn-sm" onClick={this.handleClick}>Convert the article</button>
     }
 
     return(
