@@ -19,7 +19,7 @@ class Main extends React.Component {
       modalDownloadMessage: 'Please wait a bit for us to convert your article into audio.',
       modalDownloadTitle: 'Converting',
       modalErrorClicked: false,
-      modalErrorMessage: 'Please make sure you enter a RSS feed.',
+      modalErrorMessage: 'This website is only able to work with RSS at the monent.  Please make sure you entered a RSS feed.',
       modalErrorTitle: 'Error'
     }
 
