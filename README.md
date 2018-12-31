@@ -6,6 +6,9 @@ I build this service for myself.  I subscribed to Ben Thompson's daily update [S
 
 To get started, you simply enter a rss feed, and choose the blogpost you wish to listen.  The article will be converted into audio (.mp3 format) in few seconds.
 
+![alt demo](https://pollyaudio.sfo2.digitaloceanspaces.com/assets/assets/castpie.gif "Demo")
+
+
 ## Tech
 1. [AWS Polly](https://aws.amazon.com/polly/)
 2. [Digital Ocean](https://www.digitalocean.com/)
