@@ -1,12 +1,15 @@
 import React from 'react';
 import axios from 'axios';
-import SbListItemParagraph from './sbListItemParagraph.jsx'
-import SbListItemImages from './sbListItemImages.jsx'
+import Plyr from 'plyr';
+import SbListItemParagraph from './sbListItemParagraph.jsx';
+import SbListItemImages from './sbListItemImages.jsx';
+import css from './css/style.css';
 
 class SbListItem extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      id: '',
       title: '',
       text: '',
       downloadUrl: ''
@@ -17,7 +20,9 @@ class SbListItem extends React.Component {
   }
 
   componentDidMount() {
+    const randomId = Math.floor(100000 + Math.random() * 900000);
     this.setState({
+      id: randomId,
       title: this.props.item.title,
       text: this.props.item['content:encoded']
     })
@@ -43,20 +48,24 @@ class SbListItem extends React.Component {
   render() {
 
     let downloadButton;
+    let player;
     if (this.state.downloadUrl.length > 0) {
       downloadButton = <a className="btn btn-primary btn-sm" href={this.state.downloadUrl}>Ready to download</a>
+      player = <audio id={`player-${this.state.id}`} controls><source src={this.state.downloadUrl} type="audio/mp3"/></audio>
+      const plyr = new Plyr(`#player-${this.state.id}`);
     } else {
       downloadButton = <button className="btn btn-outline-primary btn-sm" onClick={this.handleClick}>Convert the article</button>
     }
 
     return(
-      <li className="media list-group-item p-4">
+      <li className="media list-group-item p-4 sbListItem">
         <div className="media-body">
           <div className="media-heading">
             <small className="float-right text-muted">{this.props.item.pubDate}</small>
             <h6>{this.state.title}</h6>
           </div>
-          {downloadButton}          
+          {player}
+          <div className="download-button">{downloadButton}</div>
           <SbListItemParagraph text={this.state.text}/>          
           <SbListItemImages text={this.state.text}/>          
         </div>        
