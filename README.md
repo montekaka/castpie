@@ -6,6 +6,7 @@ Like many other commuters living and working around Los Angeles, I do not have t
 
 To get started, you simply enter a rss feed, and choose the blogpost you wish to listen.  The article will be converted into audio (.mp3 format) in few seconds.
 
+![screehost][screenshot]
 ![castpie][demo]
 
 
@@ -36,4 +37,12 @@ Delete image
 Delete linked container
 `docker rm {container-id}`
 
+## Todo
+1. Add user model
+  * allow user to sign up and create his profile
+  * allow user to submit rss feeds
+2. Add feed model
+3. Add audiopost model
+
+[screenshot]: https://pollyaudio.sfo2.digitaloceanspaces.com/assets/assets/screenshot.png
 [demo]: https://pollyaudio.sfo2.digitaloceanspaces.com/assets/assets/castpie.gif
