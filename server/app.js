@@ -2,8 +2,9 @@ const express = require('express');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
-const path = require('path');
-const axios = require('axios');
+// const path = require('path');
+// const axios = require('axios');
+const db = require('./models/index');
 const router = require('./routes.js');
 
 dotenv.config();
