@@ -44,5 +44,25 @@ Delete linked container
 2. Add feed model
 3. Add audiopost model
 
+## Database - Mongodb
+### Models
+1. Feed
+  * url
+  * author
+  * title
+  * description  
+2. Article
+  * feed_id
+  * title
+  * pubDate
+  * url
+  * text
+  * audio
+  * images
+    * image
+      * url
+      * width
+      * height  
+
 [screenshot]: https://pollyaudio.sfo2.digitaloceanspaces.com/assets/assets/screenshot.png
 [demo]: https://pollyaudio.sfo2.digitaloceanspaces.com/assets/assets/castpie.gif
