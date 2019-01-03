@@ -88,17 +88,6 @@ const getBucketFiles = (text, title, baseParams) => {
   return files;
 }
 
-const getArticlesPromise = (url) => {
-  return new Promise((resolve, reject) => {
-    parser.parseURL(url, (err, feed) => {
-      if (err) {
-        reject(err);
-      }
-      resolve(feed);
-    })
-  })
-}
-
 const removeFilesPromise = (files) => {
   return Promise.map(files, (file) => {
     fs.unlinkSync(file);
@@ -157,7 +146,6 @@ module.exports = {
   pollyPromise: pollyPromise,
   saveFilePromise: saveFilePromise,
   mergeFilesPromise: mergeFilesPromise,
-  getArticlesPromise: getArticlesPromise,
   removeFilesPromise: removeFilesPromise,
   uploadFileToDOPromise: uploadFileToDOPromise,
   removeFilePromise: removeFilePromise,

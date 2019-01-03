@@ -62,7 +62,7 @@ class Main extends React.Component {
   handleSubmitRSS(){
     // console.log(this.state.rss)
     const data = {url: this.state.rss};
-    axios.post('/api/articles', data)
+    axios.post('/api/feed', data)
     .then((res) => {    
       const data = res.data;
       if(data.title) { this.setState({title: data.title})}

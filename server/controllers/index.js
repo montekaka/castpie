@@ -1,7 +1,7 @@
-const articlesContorller = require('./articles')
+const feedContorller = require('./feed')
 const articleContorller = require('./article')
 
 module.exports = {
-  articles: articlesContorller,
+  feed: feedContorller,
   article: articleContorller
 }

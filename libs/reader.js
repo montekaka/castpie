@@ -5,7 +5,7 @@ const htmlParse = require('node-html-parser');
 let parser = new Parser();
 const parse = htmlParse.parse;
 
-const getArticlesPromise = (url) => {
+const getFeedPromise = (url) => {
   return new Promise((resolve, reject) => {
     parser.parseURL(url, (err, feed) => {
       if (err) {
@@ -48,7 +48,7 @@ const getBuckets = (text) => {
 }
 
 module.exports = {
-  getArticlesPromise: getArticlesPromise,
+  getFeedPromise: getFeedPromise,
   getBuckets: getBuckets,
   getImages: getImages
 };
