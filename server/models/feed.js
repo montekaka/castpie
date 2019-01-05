@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
+const reader = require('../../libs/reader');
 
+const getFeedPromise = reader.getFeedPromise;
 //Define a schema
 const Schema = mongoose.Schema;
 const FeedModelSchema = new Schema({
@@ -32,24 +34,54 @@ const getAll = (cb) => {
   })  
 }
 
+// getFeedPromise(url).then((feed) => {
+//   const item = {
+//     url: url,
+//     title: feed['title'],
+//     description: feed['description'],
+//     language: feed['language'],
+//     link: feed['link']      
+//   }
 
-const create = (item, cb) => {
-  // if the url has been inserted, then return the feed, else create a new one
-  Feed.findOne({url: item.url}, (err, feed) => {
+//   // res.send(feed);
+// }).catch((err) => {
+//   res.sendStatus(404);
+// });  
+
+const findAndCreate = (url, cb) => {
+  Feed.findOne({url: url}, (err, feed) => {
     if (feed) {
+      // later, we will want to look for articles belong to the feed
       cb(null, feed);
-      // we will want to look for articles belong to the feed
     } else {
-      Feed.create(item, (err, _feed) => {
-        if (err) {
-          cb(err, null);
-        } else {
-          cb(null, _feed);
-          // we will create articles for the feed
-        }
-      })      
+      create(url, (err, feed) => {
+        cb(err, feed);
+      });
     }
-  });
+  })
+}
+
+const create = (url, cb) => {
+  getFeedPromise(url).then((feed) => {
+    const item = {
+      url: url,
+      title: feed['title'],
+      description: feed['description'],
+      language: feed['language'],
+      link: feed['link']      
+    }
+    Feed.create(item, (err, _feed) => {
+      if (err) {
+        cb(err, null);
+      } else {
+        cb(null, _feed);
+        // we will create articles for the feed
+      }
+    });                       
+  })
+  .catch((err) => {
+    cb(err, null);
+  })
 }
 
 const destroy = (id, cb) => {
@@ -63,12 +95,11 @@ const destroy = (id, cb) => {
   });
 }
 
-
 module.exports = {
   Feed: Feed,
   get: get,
   getAll: getAll,
-  create: create,
+  findAndCreate: findAndCreate,
   destroy: destroy,
   // findByUrl: findByUrl,
 }
