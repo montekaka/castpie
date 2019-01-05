@@ -14,69 +14,61 @@ const FeedModelSchema = new Schema({
 
 const Feed = mongoose.model('Feed', FeedModelSchema);
 
-// const get = (req, res) => {
-//   const id = req.params.id;
-//   if (id) {
-//     Feed.findOne({_id: id}, (err, feed) => {
-//       if (err) {
-//         res.sendStatus(404);
-//       } else {
-//         res.json(feed);
-//       }
-//     })
-//   }
+const get = (id, cb) => {
+  Feed.findOne({_id: id}, (err, feed) => {
+    if (err) {
+      cb(err, null);
+    } else {
+      cb(null, feed);
+    }
+  })
+}
 
-//   Feed.find({}).then((feed) => {
-//     res.json(feed);
-//   }).catch((err) => {
-//     console.log(err);
-//     res.sendStatus(404);    
-//   })
-// }
+const getAll = (cb) => {
+  Feed.find({}).then((feed) => {
+    cb(null, feed);
+  }).catch((err) => {
+    cb(err, null);
+  })  
+}
 
-// const findByUrl = (req, res) => {
-//   const feedUrl = req.body['feedUrl'];
-//   Feed.findOne({url: feedUrl}, (err, feed) => {
-//     if (err) {
-//       res.sendStatus(404);
-//     } else {
-//       res.json(feed);
-//     }    
-//   })
-// }
 
 const create = (item, cb) => {
   // if the url has been inserted, then return the feed, else create a new one
   Feed.findOne({url: item.url}, (err, feed) => {
     if (feed) {
       cb(null, feed);
+      // we will want to look for articles belong to the feed
     } else {
       Feed.create(item, (err, _feed) => {
         if (err) {
           cb(err, null);
         } else {
           cb(null, _feed);
+          // we will create articles for the feed
         }
       })      
     }
   });
 }
 
-// const destroy = (req, res) => {
-//   const _id = req.params.id;
-//   Feed.deleteOne({id: _id}, (err) => {
-//     if (err) {
-//       res.sendStatus(404); 
-//     } else {
-//       res.json({message: `Deleted ${_id}`});
-//     }
-//   });
-// }
+const destroy = (id, cb) => {
+  Feed.deleteOne({_id: id}, (err) => {
+    if (err) {
+      cb(err, null); 
+    } else {
+      cb(null, {message: `Deleted ${id}`});
+      //res.json({message: `Deleted ${_id}`});
+    }
+  });
+}
+
 
 module.exports = {
   Feed: Feed,
-  // get: get,
+  get: get,
+  getAll: getAll,
   create: create,
-  // destroy: destroy,
+  destroy: destroy,
   // findByUrl: findByUrl,
 }
