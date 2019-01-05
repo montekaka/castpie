@@ -17,14 +17,22 @@ const FeedModelSchema = new Schema({
 const ArticleModelSchema = new Schema({
   feedId: {type: 'ObjectId', ref: 'Feed'},
   link: String,
-  rawText: String,
-  bucketText: [String],
-  audio_url: String,
+  guid: String,
+  rawTitle: String,
+  rawText: String,  
+  creator: String,
+  pubDate: Date,  
+  // from here is our own manipulation
   images: [{
     url: String,
     width: String,
     height: String
   }],
+  language: String,
+  bucketText: [String],
+  audioFileName: String,
+  audioUrl: String,
+  audioFormat: String,  
 	updateDate: {type: Date, default: Date.now},
 	createdDate: {type: Date, default: Date.now}		
 })
