@@ -1,6 +1,4 @@
-const models = require('./../models/index');
-
-const feedModel = models.feedModel;
+const feedModel = require('./../models/feed');
 
 const post = (req, res) => {
   const url = req.body['url'];
