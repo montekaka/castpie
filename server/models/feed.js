@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const reader = require('../../libs/reader');
 
 const getFeedPromise = reader.getFeedPromise;
-//Define a schema
+//Define a schemas
 const Schema = mongoose.Schema;
 const FeedModelSchema = new Schema({
 	url: String,
@@ -14,7 +14,24 @@ const FeedModelSchema = new Schema({
 	createdDate: {type: Date, default: Date.now}	
 });
 
+const ArticleModelSchema = new Schema({
+  feedId: {type: 'ObjectId', ref: 'Feed'},
+  link: String,
+  rawText: String,
+  bucketText: [String],
+  audio_url: String,
+  images: [{
+    url: String,
+    width: String,
+    height: String
+  }],
+	updateDate: {type: Date, default: Date.now},
+	createdDate: {type: Date, default: Date.now}		
+})
+
+
 const Feed = mongoose.model('Feed', FeedModelSchema);
+const Article = mongoose.model('Article', ArticleModelSchema);
 
 const get = (id, cb) => {
   Feed.findOne({_id: id}, (err, feed) => {
@@ -33,20 +50,6 @@ const getAll = (cb) => {
     cb(err, null);
   })  
 }
-
-// getFeedPromise(url).then((feed) => {
-//   const item = {
-//     url: url,
-//     title: feed['title'],
-//     description: feed['description'],
-//     language: feed['language'],
-//     link: feed['link']      
-//   }
-
-//   // res.send(feed);
-// }).catch((err) => {
-//   res.sendStatus(404);
-// });  
 
 const findAndCreate = (url, cb) => {
   Feed.findOne({url: url}, (err, feed) => {
@@ -97,6 +100,7 @@ const destroy = (id, cb) => {
 
 module.exports = {
   Feed: Feed,
+  Article: Article,
   get: get,
   getAll: getAll,
   findAndCreate: findAndCreate,
