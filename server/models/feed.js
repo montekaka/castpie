@@ -1,3 +1,4 @@
+const Promise = require('bluebird');
 const models = require('./main');
 const reader = require('../../libs/reader');
 const articleModel = require('./article');
@@ -50,17 +51,17 @@ const create = (url, cb) => {
       title: feed['title'],
       description: feed['description'],
       language: feed['language'],
-      link: feed['link']      
-    }
-    const items = feed.items;
-    Feed.create(feedSummary, (err, _feed) => {
-      if (err) {
-        cb(err, null);
-      } else {
-        cb(null, _feed);
-        // we will create articles for the feed
-      }
-    });                       
+      link: feed['link'],
+      items: feed.items    
+    }    
+    return feedSummary;           
+  })
+  .then((feedSummary) => {
+    const feed = new Feed(feedSummary);
+    return feed.save();
+  })
+  .then((feed) => {   
+    cb(null, feed);
   })
   .catch((err) => {
     cb(err, null);
