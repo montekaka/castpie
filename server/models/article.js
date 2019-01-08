@@ -3,8 +3,20 @@ const models = require('./main');
 
 const Article = models.Article;
 
-insertDifference = (items, existItems) => {
-  
+insertDifference = (items, existItems, cb) => {
+  const newItems = difference(items, existItems);
+  cb(newItems);
+}
+
+findArticlesByFeedId = (feedId, cb) => {
+  var query = Article.find({}).where('feedId').equals(feedId);
+  query.exec((err, articles) => {
+    if (err) {
+      cb(err, null);
+    } else {
+      cb(null, articles);
+    }
+  })
 }
 
 // we might want to move this one to libs
@@ -18,4 +30,13 @@ difference = (items, existItems) => {
     }
   }
   return newItems;
+}
+
+create = (item) => {
+  
+}
+
+module.exports = {
+  insertDifference: insertDifference,
+  findArticlesByFeedId: findArticlesByFeedId
 }
