@@ -1,5 +1,3 @@
-
-
 const mongoose = require('mongoose');
 
 //Define a schemas
@@ -37,9 +35,11 @@ const ArticleModelSchema = new Schema({
 	createdDate: {type: Date, default: Date.now}		
 })
 
-
 const Feed = mongoose.model('Feed', FeedModelSchema);
 const Article = mongoose.model('Article', ArticleModelSchema);
+
+// const thing = new Article({feedId: {type: 'ObjectId', ref: 'Feed'}});
+// thing.save();
 
 module.exports = {
   Feed: Feed,
