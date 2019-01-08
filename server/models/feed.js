@@ -38,7 +38,26 @@ const findAndCreate = (url, cb) => {
       })      
     } else {
       create(url, (err, feed) => {
-        cb(err, feed);
+        const feedSummary = feed.feedSummary;
+        const items = feed.items;
+        items.forEach((item) => {
+          item['language'] = feedSummary.language;
+          item['feedId'] = feedSummary._id;
+          item['rawTitle'] = item.title;
+          item['rawText'] = item["content:encoded"];
+          item['audioFileName'] = item['title'].split('/').join(" ");
+          item['audioFormat'] = "mp3";
+          item['bucketText'] = reader.getBuckets(item["content:encoded"]);
+          item['images'] = reader.getImages(item["content:encoded"]);
+        });
+        
+        articleModel.insertMany(items, (err, articles) => {
+          if (err) {
+            cb(err, null);
+          } else {
+            cb(null, feedSummary)
+          }
+        })
       });
     }
   })
@@ -46,19 +65,27 @@ const findAndCreate = (url, cb) => {
 
 const create = (url, cb) => {
   getFeedPromise(url).then((feed) => {
+    let imageUrl;
+    if(feed.image) {
+      imageUrl = feed.image.url;
+    }
     const feedSummary = {
       url: url,
       title: feed['title'],
       description: feed['description'],
       language: feed['language'],
       link: feed['link'],
+      imageUrl: imageUrl,
       items: feed.items    
     }    
     return feedSummary;           
   })
   .then((feedSummary) => {
     const feed = new Feed(feedSummary);
-    return feed.save();
+    const promise = feed.save();
+    return promise.then((f) => {
+      return {feedSummary: f, items: feedSummary.items};
+    })
   })
   .then((feed) => {   
     cb(null, feed);

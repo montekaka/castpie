@@ -8,6 +8,7 @@ const FeedModelSchema = new Schema({
   description: String,
   language: String,
   link: String,
+  imageUrl: String,
 	updateDate: {type: Date, default: Date.now},
 	createdDate: {type: Date, default: Date.now}	
 });
@@ -22,9 +23,9 @@ const ArticleModelSchema = new Schema({
   pubDate: Date,  
   // from here is our own manipulation
   images: [{
-    url: String,
-    width: String,
-    height: String
+    src: String,
+    "data-width": String,
+    "data-height": String
   }],
   language: String,
   bucketText: [String],

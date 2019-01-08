@@ -1,3 +1,4 @@
+const Promise = require('bluebird');
 const _ = require('underscore');
 const models = require('./main');
 
@@ -32,11 +33,14 @@ difference = (items, existItems) => {
   return newItems;
 }
 
-create = (item) => {
-  
+insertMany = (items, cb) => {
+  Article.insertMany(items, (err, articles) => {
+    cb(err, articles);
+  })
 }
 
 module.exports = {
   insertDifference: insertDifference,
-  findArticlesByFeedId: findArticlesByFeedId
+  findArticlesByFeedId: findArticlesByFeedId,
+  insertMany: insertMany
 }
