@@ -1,8 +1,10 @@
 const models = require('./main');
 const reader = require('../../libs/reader');
+const articleModel = require('./article');
 
 const getFeedPromise = reader.getFeedPromise;
 const Feed = models.Feed;
+const Article = models.Article;
 
 const get = (id, cb) => {
   Feed.findOne({_id: id}, (err, feed) => {
@@ -26,7 +28,13 @@ const findAndCreate = (url, cb) => {
   Feed.findOne({url: url}, (err, feed) => {
     if (feed) {
       // later, we will want to look for articles belong to the feed
-      cb(null, feed);
+      articleModel.findArticlesByFeedId(feed._id, (err, articles) => {
+        if (err) {
+          cb(err, null);
+        } else {
+          cb(null, {main:feed, articles: articles});
+        }        
+      })      
     } else {
       create(url, (err, feed) => {
         cb(err, feed);
@@ -37,14 +45,15 @@ const findAndCreate = (url, cb) => {
 
 const create = (url, cb) => {
   getFeedPromise(url).then((feed) => {
-    const item = {
+    const feedSummary = {
       url: url,
       title: feed['title'],
       description: feed['description'],
       language: feed['language'],
       link: feed['link']      
     }
-    Feed.create(item, (err, _feed) => {
+    const items = feed.items;
+    Feed.create(feedSummary, (err, _feed) => {
       if (err) {
         cb(err, null);
       } else {
