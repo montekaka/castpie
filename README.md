@@ -37,6 +37,17 @@ Delete image
 Delete linked container
 `docker rm {container-id}`
 
+## Endpoint/APIs
+### Feed
+1. CREATE - /api/feed
+2. GET - /api/feed
+3. GET - /api/feed/:id
+4. DELETE - /api/feed/:id
+
+### Articles
+1. GET - /api/feed/:id/articles
+2. GET - /api/articles/:id
+
 ## Todo
 1. Add user model
   * allow user to sign up and create his profile
