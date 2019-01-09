@@ -32,6 +32,17 @@ const get = (req, res) => {
   }
 }
 
+const getArticles = (req, res) => {
+  const id = req.params.id;
+  feedModel.getArticles(id, (err, articles) => {    
+    if (err) {
+      res.sendStatus(404);
+    } else {
+      res.send(articles);
+    }    
+  })
+}
+
 const destroy = (req, res) => {
   const id = req.params.id;
   feedModel.destroy(id, (err, msg) => {
@@ -47,5 +58,6 @@ const destroy = (req, res) => {
 module.exports = {
   get: get,
   post: post,
-  destroy: destroy
+  destroy: destroy,
+  getArticles: getArticles
 }

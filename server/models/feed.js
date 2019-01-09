@@ -106,10 +106,22 @@ const destroy = (id, cb) => {
   });
 }
 
+const getArticles = (id, cb) => {
+  var query = Article.find({feedId: id});
+  query.exec((err, articles) => {
+    if (err) {
+      cb(err, null);
+    } else {
+      cb(null, articles);
+    }
+  });
+}
+
 module.exports = {
   get: get,
   getAll: getAll,
   findAndCreate: findAndCreate,
   destroy: destroy,
+  getArticles: getArticles
   // findByUrl: findByUrl,
 }
