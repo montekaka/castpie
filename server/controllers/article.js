@@ -1,53 +1,19 @@
 const pollytalk = require('./../../libs/pollytalk');
 const Promise = require('bluebird');
 const _ = require('underscore');
+const articleModel = require('./../models/article');
+
+const post = (req, res) => {
+  const id = req.body['id'];
+  articleModel.doPolly(id, (err, article) => {
+    if(err) {
+      res.sendStatus(404);
+    } else {
+      res.send(article);
+    }
+  });    
+}
 
 module.exports = {
-  post: (req, res) => {
-    const mergedFileName = req.body['title'].split('/').join(" ");
-    const title = encodeURIComponent(req.body['title']);    
-    const randomNum = Math.floor(Math.random() * 100) + 2;
-    let finalFilename = `./tmp/${encodeURIComponent(title)}${randomNum}.mp3`;
-    const baseParams = {
-      'OutputFormat': req.body['outputFormat'],
-      'VoiceId': req.body['voiceId']
-    }
-    const files = pollytalk.getBucketFiles(req.body['text'], title, baseParams);
-    let savedFiles = _.map(files, (file) => {return file.filename});
-    Promise.map(files, (file) => {      
-      return pollytalk.pollyPromise(file.params).then((audioStream) => {
-        return pollytalk.saveFilePromise(audioStream, file.filename)
-      })
-      .then((savedFileName) => {
-        console.log(savedFileName)
-      })
-      .catch((err) => {
-        console.log('polly error', err);
-      },{
-        concurrency: 4
-      });      
-    })
-    .then(() => {
-      return files
-    })
-    .then((files) => {
-      return pollytalk.mergeFilesPromise(files, finalFilename);
-    })
-    .then(() => {
-      return pollytalk.removeFilesPromise(savedFiles);
-    })
-    .then(() => {      
-      return pollytalk.uploadFileToDOPromise(finalFilename, `${mergedFileName}.mp3`)
-    })
-    .then((data) => {
-      res.send(data);
-      return pollytalk.removeFilePromise(finalFilename).then(() => {
-        console.log('deleted file')  
-      })
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500)
-    })
-  }
+  post: post
 }

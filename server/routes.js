@@ -6,6 +6,6 @@ router.get('/api/feed', controller.feed.get);
 router.get('/api/feed/:id/articles', controller.feed.getArticles);
 router.get('/api/feed/:id', controller.feed.get);
 router.delete('/api/feed/:id', controller.feed.destroy);
-router.post('/api/article', controller.article.post);
+router.post('/api/articles', controller.article.post);
 
 module.exports = router;
