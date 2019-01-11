@@ -12,37 +12,44 @@ class SbListItem extends React.Component {
       id: '',
       title: '',
       text: '',
-      downloadUrl: ''
+      bucketText: [],
+      images: [],
+      downloadUrl: ''    
     }
 
     this.handleClick = this.handleClick.bind(this);
-    this.post = this.post.bind(this);
+    this.getAudioUrl = this.getAudioUrl.bind(this);
   }
 
   componentDidMount() {
-    const randomId = Math.floor(100000 + Math.random() * 900000);
+    // const randomId = Math.floor(100000 + Math.random() * 900000);
     this.setState({
-      id: randomId,
-      title: this.props.item.title,
-      text: this.props.item['content:encoded']
+      id: this.props.item._id,
+      title: this.props.item.rawTitle,
+      text: this.props.item.rawText,
+      bucketText: this.props.item.bucketText,
+      images: this.props.item.images
     })
   }
 
   handleClick() {
     this.props.modalDownloadClickedToggle();
-    this.post();
+    this.getAudioUrl();
   }
-
-  post() {
-    const data = {title: this.state.title, text: this.state.text, outputFormat: 'mp3', voiceId: 'Kimberly'};
-    axios.post('/api/article', data)
-    .then((res) => {      
-      this.setState({downloadUrl: res.data}, () => {
-        this.props.modalDownloadClickedToggle();
-      });
-    }).catch((err) => {
-      console.log(err)
-    })    
+  
+  getAudioUrl() {
+    const id = this.state.id;
+    const endpoint = `/api/articles/${id}/mp3`;    
+    axios.get(endpoint)
+    .then((res) => {
+      const audioUrl = res.data.audioUrl;
+      this.setState({downloadUrl: audioUrl}, () => {
+        this.props.modalDownloadClickedToggle();        
+      })
+    })
+    .catch((err) => {
+      console.log(err);
+    })
   }
   
   render() {
@@ -66,8 +73,8 @@ class SbListItem extends React.Component {
           </div>
           {player}
           <div className="download-button">{downloadButton}</div>
-          <SbListItemParagraph text={this.state.text}/>          
-          <SbListItemImages text={this.state.text}/>          
+          <SbListItemParagraph bucketText={this.state.bucketText}/>          
+          <SbListItemImages images={this.state.images}/>          
         </div>        
       </li>
     )

@@ -11,6 +11,7 @@ class Main extends React.Component {
     super(props);
     this.state = {
       rss: '',
+      _id: null,
       title: null,
       imageUrl: null,
       description: null,
@@ -61,19 +62,17 @@ class Main extends React.Component {
 
   handleSubmitRSS(){
     // console.log(this.state.rss)
+    const _this = this;
     const data = {url: this.state.rss};
     axios.post('/api/feed', data)
     .then((res) => {    
-      const data = res.data;
+      const data = res.data.main;
+      const _id = data._id;
+      this.setState({_id: _id});
       if(data.title) { this.setState({title: data.title})}
-      if(data.image) {
-        this.setState({imageUrl: data.image.url})
-      } else {
-        // default
-        // this.setState({imageUrl: data.image.url})
-      }
+      if(data.imageUrl) { this.setState({imageUrl: data.imageUrl})}
       if(data.description) { this.setState({description: data.description})}
-      if(data.items) { this.setState({items: data.items})}
+      this.setState({items: res.data.articles});      
     }).catch((err) => {
       // error modal
       this.modalErrorClickedToggle();

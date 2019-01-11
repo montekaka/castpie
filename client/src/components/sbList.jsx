@@ -6,7 +6,7 @@ const SbList = (props) => {
     <ul className="list-group media-list media-list-stream mb-4">
       {
         props.items.map((item) => 
-          <SbListItem item={item} key={item.title} modalDownloadClickedToggle={props.modalDownloadClickedToggle}/>
+          <SbListItem item={item} key={item._id} modalDownloadClickedToggle={props.modalDownloadClickedToggle}/>
         )
       }
     </ul>
