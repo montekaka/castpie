@@ -61,7 +61,7 @@ doPolly = (id, cb) => {
           'VoiceId': 'Kimberly',
           LanguageCode: language
         }      
-        const files = pollytalk.getBucketFiles(text, title, baseParams);
+        const files = pollytalk.getBucketFiles(text, mergedFileName, baseParams);
         let savedFiles = _.map(files, (file) => {return file.filename});
         Promise.map(files, (file) => {      
           return pollytalk.pollyPromise(file.params).then((audioStream) => {
