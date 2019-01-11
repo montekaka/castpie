@@ -7,5 +7,6 @@ router.get('/api/feed/:id/articles', controller.feed.getArticles);
 router.get('/api/feed/:id', controller.feed.get);
 router.delete('/api/feed/:id', controller.feed.destroy);
 router.post('/api/articles', controller.article.post);
+router.get('/api/articles/:id/mp3', controller.article.getMp3);
 
 module.exports = router;

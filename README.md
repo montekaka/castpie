@@ -47,6 +47,7 @@ Delete linked container
 ### Articles
 1. GET - /api/feed/:id/articles
 2. GET - /api/articles/:id
+3. GET - /api/articles/:id/mp3
 
 ## Todo
 1. Add user model

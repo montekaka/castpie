@@ -14,6 +14,18 @@ const post = (req, res) => {
   });    
 }
 
+const getMp3 = (req, res) => {
+  const id = req.params.id;
+  articleModel.doPolly(id, (err, article) => {
+    if(err) {
+      res.sendStatus(404);
+    } else {
+      res.send({audioUrl: article.audioUrl});
+    }
+  });    
+}
+
 module.exports = {
-  post: post
+  post: post,
+  getMp3: getMp3
 }

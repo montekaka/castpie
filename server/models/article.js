@@ -47,57 +47,62 @@ doPolly = (id, cb) => {
     if (err) {
       cb(err, null);
     } else {
-      const text = article.rawText;
-      const language = article.language;
-      const title = article.rawTitle;
-      const mergedFileName = article.audioFileName;
-      const randomNum = Math.floor(Math.random() * 100) + 2;
-      let finalFilename = `./tmp/${mergedFileName}${randomNum}.mp3`;
-      const baseParams = {
-        'OutputFormat': article.audioFormat,
-        'VoiceId': 'Kimberly',
-        LanguageCode: language
-      }      
-      const files = pollytalk.getBucketFiles(text, title, baseParams);
-      let savedFiles = _.map(files, (file) => {return file.filename});
-      Promise.map(files, (file) => {      
-        return pollytalk.pollyPromise(file.params).then((audioStream) => {
-          return pollytalk.saveFilePromise(audioStream, file.filename)
+      if ( article.audioUrl ) {
+        cb(null, article)
+      } else {
+        const text = article.rawText;
+        const language = article.language;
+        const title = article.rawTitle;
+        const mergedFileName = article.audioFileName;
+        const randomNum = Math.floor(Math.random() * 100) + 2;
+        let finalFilename = `./tmp/${mergedFileName}${randomNum}.mp3`;
+        const baseParams = {
+          'OutputFormat': article.audioFormat,
+          'VoiceId': 'Kimberly',
+          LanguageCode: language
+        }      
+        const files = pollytalk.getBucketFiles(text, title, baseParams);
+        let savedFiles = _.map(files, (file) => {return file.filename});
+        Promise.map(files, (file) => {      
+          return pollytalk.pollyPromise(file.params).then((audioStream) => {
+            return pollytalk.saveFilePromise(audioStream, file.filename)
+          })
+          .then((savedFileName) => {
+            console.log(savedFileName)
+          })
+          .catch((err) => {
+            console.log('polly error', err);
+          },{
+            concurrency: 4
+          });      
         })
-        .then((savedFileName) => {
-          console.log(savedFileName)
+        .then(() => {
+          return files
+        })
+        .then((files) => {
+          return pollytalk.mergeFilesPromise(files, finalFilename);
+        })
+        .then(() => {
+          return pollytalk.removeFilesPromise(savedFiles);
+        })
+        .then(() => {      
+          return pollytalk.uploadFileToDOPromise(finalFilename, `${mergedFileName}.mp3`)
+        })
+        .then((data) => { 
+          console.log(id)
+          Article.findByIdAndUpdate(id, { $set: {audioUrl: data}}, {new: true}, (err, res) => {
+            if (err) {
+              cb(err, null);
+            } else {
+              cb(null, res);
+            }
+          })
+          return pollytalk.removeFilePromise(finalFilename);
         })
         .catch((err) => {
-          console.log('polly error', err);
-        },{
-          concurrency: 4
-        });      
-      })
-      .then(() => {
-        return files
-      })
-      .then((files) => {
-        return pollytalk.mergeFilesPromise(files, finalFilename);
-      })
-      .then(() => {
-        return pollytalk.removeFilesPromise(savedFiles);
-      })
-      .then(() => {      
-        return pollytalk.uploadFileToDOPromise(finalFilename, `${mergedFileName}.mp3`)
-      })
-      .then((data) => { 
-        Article.findByIdAndUpdate(id, { $set: {audioUrl: data}}, (err, res) => {
-          if (err) {
-            cb(err, null);
-          } else {
-            cb(null, res);
-          }
+          cb(err, null);
         })
-        return pollytalk.removeFilePromise(finalFilename);
-      })
-      .catch((err) => {
-        cb(err, null);
-      })
+      }      
     }
   });
 }
