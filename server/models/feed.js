@@ -45,7 +45,9 @@ const findAndCreate = (url, cb) => {
           item['feedId'] = feedSummary._id;
           item['rawTitle'] = item.title;
           item['rawText'] = item["content:encoded"];
-          item['audioFileName'] = item['title'].split('/').join(" ");
+          // item['audioFileName']
+          let audioFileName = item['title'].split('/').join(" ");
+          item['audioFileName'] = audioFileName.split(",").join(" ");
           item['audioFormat'] = "mp3";
           item['bucketText'] = reader.getBuckets(item["content:encoded"]);
           item['images'] = reader.getImages(item["content:encoded"]);
