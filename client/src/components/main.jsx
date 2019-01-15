@@ -76,7 +76,6 @@ class Main extends React.Component {
     }).catch((err) => {
       // error modal
       this.modalErrorClickedToggle();
-      // console.log(err)
     })
   }
 

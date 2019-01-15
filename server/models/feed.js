@@ -55,7 +55,7 @@ const findAndCreate = (url, cb) => {
           if (err) {
             cb(err, null);
           } else {
-            cb(null, feedSummary)
+            cb(null, {main:feedSummary, articles: articles})
           }
         })
       });
@@ -96,14 +96,21 @@ const create = (url, cb) => {
 }
 
 const destroy = (id, cb) => {
-  Feed.deleteOne({_id: id}, (err) => {
-    if (err) {
-      cb(err, null); 
+  // before delete the feed, we will like to delete all the articles associate with it
+  // we will like to delete the mp3 file in DO as well
+  articleModel.destroyAllByFeedId(id, (err) => {
+    if(err) {
+      cb(err, null);
     } else {
-      cb(null, {message: `Deleted ${id}`});
-      //res.json({message: `Deleted ${_id}`});
+      Feed.deleteOne({_id: id}, (err) => {
+        if (err) {
+          cb(err, null); 
+        } else {
+          cb(null, {message: `Deleted ${id}`});
+        }
+      });
     }
-  });
+  })
 }
 
 const getArticles = (id, cb) => {
