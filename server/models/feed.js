@@ -40,10 +40,11 @@ const findAndCreate = (url, cb) => {
       create(url, (err, feed) => {
         const feedSummary = feed.feedSummary;
         const items = feed.items;
+        console.log(items[0]);
         items.forEach((item) => {
           item['language'] = feedSummary.language;
           item['feedId'] = feedSummary._id;
-          item['rawTitle'] = item.title;
+          item['rawTitle'] = item.title;          
           item['rawText'] = item["content:encoded"];
           // item['audioFileName']
           let audioFileName = item['title'].split('/').join(" ");
