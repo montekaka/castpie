@@ -89,7 +89,6 @@ doPolly = (id, cb) => {
           return pollytalk.uploadFileToDOPromise(finalFilename, `${mergedFileName}.mp3`)
         })
         .then((data) => { 
-          console.log(id)
           Article.findByIdAndUpdate(id, { $set: {audioUrl: data}}, {new: true}, (err, res) => {
             if (err) {
               cb(err, null);
@@ -107,9 +106,49 @@ doPolly = (id, cb) => {
   });
 }
 
+destroyAllByFeedId = (feedId, cb) => {
+  // we will like to delete files on DigitalOcean first and then delete from database
+  findArticlesByFeedId(feedId, (err, articles) => {
+    let _articles = _.filter(articles, (article) => {
+      return article['audioUrl'] !== undefined;
+    });
+    if(err) {
+      cb(err, null)
+    } else {
+      Promise.map(_articles, (article) => {  
+        let audioUrl = article['audioFileName']+'.'+article['audioFormat'];
+        return pollytalk.deleteFileFromDOPromise(audioUrl)
+        .then(() =>{
+          return {err: null, deleted: true};
+        })
+        .catch((err) => {
+          console.log('ERR: deleted file from DO', err);
+          // cb(err, null);
+          return {err: err, deleted: null};
+        });
+      }, {
+        concurrency: 4
+      }).then((result) => {
+        if (result.err) {
+          cb(result.err, null);
+        } else {
+          Article.deleteMany({feedId: feedId}, (err) => {
+            if(err){
+              cb(err, null);
+            } else {
+              cb(null, true);
+            }
+          });
+        }
+      })      
+    }
+  })
+}
+
 module.exports = {
   insertDifference: insertDifference,
   findArticlesByFeedId: findArticlesByFeedId,
+  destroyAllByFeedId: destroyAllByFeedId,
   insertMany: insertMany,
   doPolly: doPolly
 }

@@ -47,7 +47,8 @@ const findAndCreate = (url, cb) => {
           item['rawText'] = item["content:encoded"];
           // item['audioFileName']
           let audioFileName = item['title'].split('/').join(" ");
-          item['audioFileName'] = audioFileName.split(",").join(" ");
+          item['audioFileName'] = audioFileName.split(",").join("");
+
           item['audioFormat'] = "mp3";
           item['bucketText'] = reader.getBuckets(item["content:encoded"]);
           item['images'] = reader.getImages(item["content:encoded"]);

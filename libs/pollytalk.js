@@ -121,6 +121,7 @@ const readFilePromise = (file, filename) => {
         Bucket: 'pollyaudio',
         Key: filename,
         ACL: 'public-read'
+        // ACL: 'public-read-write'
       }      
       resolve(params);
     })
@@ -142,12 +143,33 @@ const uploadFileToDOPromise = (file, filename) => {
   })
 }
 
+const deleteFileFromDOPromise = (fileUrl) => {
+  const params = {
+    Bucket: 'pollyaudio',
+    Key: fileUrl,
+  }
+  
+  return new Promise((resolve, reject) => {
+    console.log('hi in promise')
+    s3.deleteObject(params, (err, data) => {
+      if(err) {
+        console.log(err);
+        reject(err);
+      } else {
+        console.log(data);
+        resolve(data);
+      }
+    })
+  })
+}
+
 module.exports = {
   pollyPromise: pollyPromise,
   saveFilePromise: saveFilePromise,
   mergeFilesPromise: mergeFilesPromise,
   removeFilesPromise: removeFilesPromise,
   uploadFileToDOPromise: uploadFileToDOPromise,
+  deleteFileFromDOPromise: deleteFileFromDOPromise,
   removeFilePromise: removeFilePromise,
   getBucketFiles: getBucketFiles
 };
