@@ -150,7 +150,6 @@ const deleteFileFromDOPromise = (fileUrl) => {
   }
   
   return new Promise((resolve, reject) => {
-    console.log('hi in promise')
     s3.deleteObject(params, (err, data) => {
       if(err) {
         console.log(err);

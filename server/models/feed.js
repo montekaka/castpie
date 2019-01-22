@@ -1,9 +1,11 @@
 const Promise = require('bluebird');
 const models = require('./main');
 const reader = require('../../libs/reader');
+const pollytalk = require('../../libs/pollytalk');
 const articleModel = require('./article');
 
 const getFeedPromise = reader.getFeedPromise;
+const deleteFileFromDOPromise = pollytalk.deleteFileFromDOPromise;
 const Feed = models.Feed;
 const Article = models.Article;
 
@@ -39,8 +41,7 @@ const findAndCreate = (url, cb) => {
     } else {
       create(url, (err, feed) => {
         const feedSummary = feed.feedSummary;
-        const items = feed.items;
-        console.log(items[0]);
+        const items = feed.items;        
         items.forEach((item) => {
           item['language'] = feedSummary.language;
           item['feedId'] = feedSummary._id;
@@ -106,13 +107,18 @@ const destroy = (id, cb) => {
     if(err) {
       cb(err, null);
     } else {
-      Feed.deleteOne({_id: id}, (err) => {
-        if (err) {
-          cb(err, null); 
-        } else {
-          cb(null, {message: `Deleted ${id}`});
-        }
-      });
+      deleteFileFromDOPromise(id).then(() => {
+        Feed.deleteOne({_id: id}, (err) => {
+          if (err) {
+            cb(err, null); 
+          } else {
+            cb(null, {message: `Deleted ${id}`});
+          }
+        });
+      })
+      .catch((err) => {
+        cb(err, null); 
+      })
     }
   })
 }

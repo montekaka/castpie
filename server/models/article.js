@@ -54,6 +54,7 @@ doPolly = (id, cb) => {
         const language = article.language;
         const title = article.rawTitle;
         const mergedFileName = article.audioFileName;
+        const feedId = article.feedId;
         const randomNum = Math.floor(Math.random() * 100) + 2;
         let finalFilename = `./tmp/${mergedFileName}${randomNum}.mp3`;
         const baseParams = {
@@ -86,7 +87,7 @@ doPolly = (id, cb) => {
           return pollytalk.removeFilesPromise(savedFiles);
         })
         .then(() => {      
-          return pollytalk.uploadFileToDOPromise(finalFilename, `${mergedFileName}.mp3`)
+          return pollytalk.uploadFileToDOPromise(finalFilename, `${feedId}/${mergedFileName}.mp3`)
         })
         .then((data) => { 
           Article.findByIdAndUpdate(id, { $set: {audioUrl: data}}, {new: true}, (err, res) => {
@@ -116,7 +117,7 @@ destroyAllByFeedId = (feedId, cb) => {
       cb(err, null)
     } else {
       Promise.map(_articles, (article) => {  
-        let audioUrl = article['audioFileName']+'.'+article['audioFormat'];
+        let audioUrl = feedId + '/'+ article['audioFileName']+'.'+article['audioFormat'];
         return pollytalk.deleteFileFromDOPromise(audioUrl)
         .then(() =>{
           return {err: null, deleted: true};
