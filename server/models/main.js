@@ -9,6 +9,7 @@ const FeedModelSchema = new Schema({
   language: String,
   link: String,
   imageUrl: String,
+  refreshedDate: {type: Date, default: Date.now}, 
 	updateDate: {type: Date, default: Date.now},
 	createdDate: {type: Date, default: Date.now}	
 });

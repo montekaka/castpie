@@ -1,4 +1,5 @@
 const Promise = require('bluebird');
+const _ = require('underscore');
 const models = require('./main');
 const reader = require('../../libs/reader');
 const pollytalk = require('../../libs/pollytalk');
@@ -25,6 +26,53 @@ const getAll = (cb) => {
   }).catch((err) => {
     cb(err, null);
   })  
+}
+
+const refreshAll = () => {
+  Feed.find({}).then((feeds) => {
+    Promise.map(feeds, (feed) => {
+      let refreshedDate = feed.refreshedDate;
+      let url = feed.url;
+      let feedId = feed._id;
+      create(url, (err, _feed) => {
+        //pubDate
+        let _items = _.filter(_feed.items, (item) => {
+          return item['pubDate'] > refreshedDate;
+        });
+        _items.forEach((item) => {
+          item['language'] = feedSummary.language;
+          item['feedId'] = feedSummary._id;
+          item['rawTitle'] = item.title;          
+          item['rawText'] = item["content:encoded"];
+          // item['audioFileName']
+          let audioFileName = item['title'].split('/').join(" ");
+          item['audioFileName'] = audioFileName.split(",").join("");
+          item['audioFormat'] = "mp3";
+          item['bucketText'] = reader.getBuckets(item["content:encoded"]);
+          item['images'] = reader.getImages(item["content:encoded"]);
+        });
+
+        articleModel.insertMany(_items, (err, articles) => {
+          if (err) {
+            cb(err, null);
+          } else {       
+            Feed.findOneAndUpdate({_id: feedId}, {refreshedDate: Date.now()}, (err, doc) => {
+              if(err) {
+                cb(err, null);
+              } else {
+                cb(null, {main:feed, articles: articles});
+              }
+            })
+          }
+        });
+      })
+    }, {
+      concurrency: 4
+    })
+  })
+  .catch((err) => {
+    cb(err, null);
+  })   
 }
 
 const findAndCreate = (url, cb) => {
@@ -60,7 +108,16 @@ const findAndCreate = (url, cb) => {
           if (err) {
             cb(err, null);
           } else {
-            cb(null, {main:feedSummary, articles: articles})
+            const _main = feedSummary;
+            const _articles = articles;
+            const feedInfo = {main:_main, articles: _articles};                        
+            Feed.findOneAndUpdate({_id: feedSummary._id}, {refreshedDate: Date.now()}, (err, doc) => {
+              if(err) {
+                cb(err, null);
+              } else {
+                cb(null, {main:feedSummary, articles: articles});
+              }
+            })
           }
         })
       });
@@ -139,6 +196,7 @@ module.exports = {
   getAll: getAll,
   findAndCreate: findAndCreate,
   destroy: destroy,
-  getArticles: getArticles
+  getArticles: getArticles,
+  refreshAll: refreshAll
   // findByUrl: findByUrl,
 }
