@@ -11,6 +11,26 @@ const post = (req, res) => {
   });  
 }
 
+const put = (req, res) => {
+  const id = req.params.id;
+  // premitted update columns
+  let changes = {};
+  if ( req.body['refreshedDate'] ) {
+    changes['refreshedDate'] = new Date(req.body['refreshedDate']);
+  }
+  if (changes !== {}) {
+    feedModel.update(id, changes, (err, feed) => {
+      if (err) {
+        res.sendStatus(404);
+      } else {
+        res.send(feed);
+      }
+    })
+  } else {
+    get(req, res);
+  }
+}
+
 const get = (req, res) => {
   const id = req.params.id;
   if (id) {
@@ -54,10 +74,10 @@ const destroy = (req, res) => {
   })
 }
 
-
 module.exports = {
   get: get,
   post: post,
+  put: put,
   destroy: destroy,
   getArticles: getArticles
 }

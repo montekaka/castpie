@@ -11,7 +11,7 @@ insertDifference = (items, existItems, cb) => {
 }
 
 findArticlesByFeedId = (feedId, cb) => {
-  var query = Article.find({}).where('feedId').equals(feedId);
+  var query = Article.find({}).where('feedId').equals(feedId).sort({pubDate: -1});
   query.exec((err, articles) => {
     if (err) {
       cb(err, null);
@@ -107,6 +107,16 @@ doPolly = (id, cb) => {
   });
 }
 
+destroy = (id, cb) => {
+  Article.deleteOne({_id: id}, (err) => {
+    if (err) {
+      cb(err, null); 
+    } else {
+      cb(null, {message: `Deleted article ${id}`});
+    }    
+  })
+}
+
 destroyAllByFeedId = (feedId, cb) => {
   // we will like to delete files on DigitalOcean first and then delete from database
   findArticlesByFeedId(feedId, (err, articles) => {
@@ -149,6 +159,7 @@ destroyAllByFeedId = (feedId, cb) => {
 module.exports = {
   insertDifference: insertDifference,
   findArticlesByFeedId: findArticlesByFeedId,
+  destroy: destroy,
   destroyAllByFeedId: destroyAllByFeedId,
   insertMany: insertMany,
   doPolly: doPolly

@@ -25,7 +25,19 @@ const getMp3 = (req, res) => {
   });    
 }
 
+const destroy = (req, res) => {
+  const id = req.params.id;
+  articleModel.destroy(id, (err, resp) => {
+    if(err) {
+      res.sendStatus(404);
+    } else {
+      res.send(resp);
+    }
+  })
+}
+
 module.exports = {
   post: post,
-  getMp3: getMp3
+  getMp3: getMp3,
+  destroy: destroy
 }

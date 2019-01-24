@@ -11,5 +11,6 @@ feed.refreshAll((err, res) => {
   } else {
     console.log('successed')
   }
+  process.exit();
 });
 

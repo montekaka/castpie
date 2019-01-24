@@ -28,47 +28,61 @@ const getAll = (cb) => {
   })  
 }
 
-const refreshAll = () => {
-  Feed.find({}).then((feeds) => {
-    Promise.map(feeds, (feed) => {
-      let refreshedDate = feed.refreshedDate;
-      let url = feed.url;
-      let feedId = feed._id;
-      create(url, (err, _feed) => {
-        //pubDate
-        let _items = _.filter(_feed.items, (item) => {
-          return item['pubDate'] > refreshedDate;
-        });
-        _items.forEach((item) => {
-          item['language'] = feedSummary.language;
-          item['feedId'] = feedSummary._id;
-          item['rawTitle'] = item.title;          
-          item['rawText'] = item["content:encoded"];
-          // item['audioFileName']
-          let audioFileName = item['title'].split('/').join(" ");
-          item['audioFileName'] = audioFileName.split(",").join("");
-          item['audioFormat'] = "mp3";
-          item['bucketText'] = reader.getBuckets(item["content:encoded"]);
-          item['images'] = reader.getImages(item["content:encoded"]);
-        });
+const update = (id, changes , cb) => {  
+  Feed.update({_id: id}, {$set: changes}, (err, res) => {
+    if(err) {
+      cb(err, null);
+    } else {
+      cb(null, res);
+    }
+  })
+}
 
-        articleModel.insertMany(_items, (err, articles) => {
-          if (err) {
-            cb(err, null);
-          } else {       
-            Feed.findOneAndUpdate({_id: feedId}, {refreshedDate: Date.now()}, (err, doc) => {
-              if(err) {
-                cb(err, null);
-              } else {
-                cb(null, {main:feed, articles: articles});
-              }
-            })
-          }
-        });
+const refreshAll = (cb) => {
+  Feed.find({}).then((feeds) => {
+    if(feeds) {
+      cb(null, 'success')
+    } else {
+      Promise.map(feeds, (feed) => {      
+        let refreshedDate = feed.refreshedDate;
+        let url = feed.url;
+        let feedId = feed._id;     
+        fetch(url)
+        .then((feedSummary) => {
+          let _items = _.filter(feedSummary.items, (item) => {
+            return new Date(item['pubDate']) > refreshedDate;
+          });              
+          _items.forEach((item) => {
+            item['language'] = feedSummary.language;
+            item['feedId'] = feedId;
+            item['rawTitle'] = item.title;          
+            item['rawText'] = item["content:encoded"];
+            // item['audioFileName']
+            let audioFileName = item['title'].split('/').join(" ");
+            item['audioFileName'] = audioFileName.split(",").join("");
+            item['audioFormat'] = "mp3";
+            item['bucketText'] = reader.getBuckets(item["content:encoded"]);
+            item['images'] = reader.getImages(item["content:encoded"]);
+          });        
+  
+          articleModel.insertMany(_items, (err, articles) => {
+            if (err) {
+              cb(err, null);
+            } else {
+              Feed.findOneAndUpdate({_id: feedId}, {refreshedDate: Date.now()}, (err, doc) => {
+                if(err) {
+                  cb(err, null);
+                } else {
+                  cb(null, {main:feed, articles: articles});
+                }
+              })
+            }
+          });
+        })         
+      }, {
+        concurrency: 4
       })
-    }, {
-      concurrency: 4
-    })
+    }    
   })
   .catch((err) => {
     cb(err, null);
@@ -87,46 +101,49 @@ const findAndCreate = (url, cb) => {
         }        
       })      
     } else {
-      create(url, (err, feed) => {
-        const feedSummary = feed.feedSummary;
-        const items = feed.items;        
-        items.forEach((item) => {
-          item['language'] = feedSummary.language;
-          item['feedId'] = feedSummary._id;
-          item['rawTitle'] = item.title;          
-          item['rawText'] = item["content:encoded"];
-          // item['audioFileName']
-          let audioFileName = item['title'].split('/').join(" ");
-          item['audioFileName'] = audioFileName.split(",").join("");
-
-          item['audioFormat'] = "mp3";
-          item['bucketText'] = reader.getBuckets(item["content:encoded"]);
-          item['images'] = reader.getImages(item["content:encoded"]);
+      fetch(url)
+      .then((feed) => {
+        create(url, (err, feed) => {
+          const feedSummary = feed.feedSummary;
+          const items = feed.items;        
+          items.forEach((item) => {
+            item['language'] = feedSummary.language;
+            item['feedId'] = feedSummary._id;
+            item['rawTitle'] = item.title;          
+            item['rawText'] = item["content:encoded"];
+            // item['audioFileName']
+            let audioFileName = item['title'].split('/').join(" ");
+            item['audioFileName'] = audioFileName.split(",").join("");
+  
+            item['audioFormat'] = "mp3";
+            item['bucketText'] = reader.getBuckets(item["content:encoded"]);
+            item['images'] = reader.getImages(item["content:encoded"]);
+          });
+          
+          articleModel.insertMany(items, (err, articles) => {
+            if (err) {
+              cb(err, null);
+            } else {
+              const _main = feedSummary;
+              const _articles = articles;
+              const feedInfo = {main:_main, articles: _articles};                        
+              Feed.findOneAndUpdate({_id: feedSummary._id}, {refreshedDate: Date.now()}, (err, doc) => {
+                if(err) {
+                  cb(err, null);
+                } else {
+                  cb(null, {main:feedSummary, articles: articles});
+                }
+              })
+            }
+          })
         });
-        
-        articleModel.insertMany(items, (err, articles) => {
-          if (err) {
-            cb(err, null);
-          } else {
-            const _main = feedSummary;
-            const _articles = articles;
-            const feedInfo = {main:_main, articles: _articles};                        
-            Feed.findOneAndUpdate({_id: feedSummary._id}, {refreshedDate: Date.now()}, (err, doc) => {
-              if(err) {
-                cb(err, null);
-              } else {
-                cb(null, {main:feedSummary, articles: articles});
-              }
-            })
-          }
-        })
-      });
+      })
     }
   })
 }
 
-const create = (url, cb) => {
-  getFeedPromise(url).then((feed) => {
+const fetch = (url) => {
+  return getFeedPromise(url).then((feed) => {
     let imageUrl;
     if(feed.image) {
       imageUrl = feed.image.url;
@@ -140,8 +157,12 @@ const create = (url, cb) => {
       imageUrl: imageUrl,
       items: feed.items    
     }    
-    return feedSummary;           
+    return feedSummary;     
   })
+}
+
+const create = (url, cb) => {
+  fetch(url)
   .then((feedSummary) => {
     const feed = new Feed(feedSummary);
     const promise = feed.save();
@@ -181,7 +202,7 @@ const destroy = (id, cb) => {
 }
 
 const getArticles = (id, cb) => {
-  var query = Article.find({feedId: id});
+  var query = Article.find({feedId: id}).sort({'pubDate': -1})
   query.exec((err, articles) => {
     if (err) {
       cb(err, null);
@@ -193,6 +214,7 @@ const getArticles = (id, cb) => {
 
 module.exports = {
   get: get,
+  update: update,
   getAll: getAll,
   findAndCreate: findAndCreate,
   destroy: destroy,
