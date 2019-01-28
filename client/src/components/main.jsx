@@ -31,6 +31,13 @@ class Main extends React.Component {
     this.resetHandler = this.resetHandler.bind(this);    
   }
 
+  componentDidMount() {
+    const _id = this.props.match.params._id;
+    if(_id) {
+      
+    }
+  }
+
   resetHandler() {
     this.setState({
       rss: '',
