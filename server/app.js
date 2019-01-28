@@ -14,7 +14,7 @@ if( process.env.NODE_ENV === 'development') {
 }
 
 const app = express();
-app.use(express.static(__dirname + '/../client/dist'))
+app.use(express.static(__dirname + '/../client/dist'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -26,9 +26,20 @@ app.use((req, res, next) => {
 
 app.use(router);
 
-app.get('*', (req, res) => res.status(200).send({
-  message: `Welcome to the articles.fm.`,
-}));
+// always redirect back to solve the react-router issue
+// https://tylermcginnis.com/react-router-cannot-get-url-refresh/
+
+app.get('/*', (req, res) => {
+	res.sendFile(path.join(__dirname , '/../client/dist/index.html'), (err) => {
+		if (err) {
+			res.status(500).send(err);
+		}
+	})
+});
+
+// app.get('*', (req, res) => res.status(200).send({
+//   message: `Welcome to the articles.fm.`,
+// }));
 
 app.listen(port, () => {
   console.log(`Exapmle app listening on port ${port}!`);
