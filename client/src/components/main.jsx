@@ -28,13 +28,33 @@ class Main extends React.Component {
     this.handleSubmitRSS = this.handleSubmitRSS.bind(this);
     this.modalDownloadClickedToggle = this.modalDownloadClickedToggle.bind(this);
     this.modalErrorClickedToggle = this.modalErrorClickedToggle.bind(this);
-    this.resetHandler = this.resetHandler.bind(this);    
+    this.resetHandler = this.resetHandler.bind(this);  
   }
 
   componentDidMount() {
     const _id = this.props.match.params._id;
     if(_id) {
+      axios.get(`/api/feed/${_id}`)
+      .then((res) => {
+        const data = res.data;
+        if(data) {
+          this.setState({_id: _id, title: data.title, imageUrl: data.imageUrl, description: data.description, rss: data.url})
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
       
+      axios.get(`/api/feed/${_id}/articles`)
+      .then((res) => {
+        const data = res.data;
+        if(data) {
+          this.setState({items: data});
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      })
     }
   }
 
@@ -49,7 +69,7 @@ class Main extends React.Component {
       modalErrorClicked: false
     })
   }
-
+ 
   handleInputChange(event){
     let value = event.target.value;
     let name = event.target.name;

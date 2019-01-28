@@ -124,9 +124,7 @@ const findAndCreate = (url, cb) => {
             if (err) {
               cb(err, null);
             } else {
-              const _main = feedSummary;
-              const _articles = articles;
-              const feedInfo = {main:_main, articles: _articles};                        
+              
               Feed.findOneAndUpdate({_id: feedSummary._id}, {refreshedDate: Date.now()}, (err, doc) => {
                 if(err) {
                   cb(err, null);
