@@ -3,8 +3,10 @@ const logger = require('morgan');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const path = require('path');
+const schedule = require('node-schedule');
 // const axios = require('axios');
 const db = require('./models/index');
+const feed = require('./models/feed');
 const router = require('./routes.js');
 
 dotenv.config();
@@ -44,5 +46,17 @@ app.get('/*', (req, res) => {
 app.listen(port, () => {
   console.log(`Exapmle app listening on port ${port}!`);
 });
+
+// scheduler
+var j = schedule.scheduleJob('* * * * *', () => {  
+  feed.refreshAll((err, res) => {
+    if(err) {
+      console.log('err of running scheduler', err)
+    } else {
+      console.log('successed of running scheduler')
+    }    
+  })
+});
+
 
 module.exports = app;
