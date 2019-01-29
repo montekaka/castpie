@@ -40,15 +40,15 @@ const update = (id, changes , cb) => {
 
 const refreshAll = (cb) => {
   Feed.find({}).then((feeds) => {
-    if(feeds) {
+    if(feeds.length === 0) {
       cb(null, 'success')
     } else {
       Promise.map(feeds, (feed) => {      
         let refreshedDate = feed.refreshedDate;
         let url = feed.url;
-        let feedId = feed._id;     
+        let feedId = feed._id;   
         fetch(url)
-        .then((feedSummary) => {
+        .then((feedSummary) => {          
           let _items = _.filter(feedSummary.items, (item) => {
             return new Date(item['pubDate']) > refreshedDate;
           });              
