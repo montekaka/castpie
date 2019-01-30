@@ -48,7 +48,7 @@ app.listen(port, () => {
 });
 
 // scheduler
-var j = schedule.scheduleJob('* * * * *', () => {  
+var j = schedule.scheduleJob('*/6 * * * *', () => {  
   feed.refreshAll((err, res) => {
     if(err) {
       console.log('err of running scheduler', err)
