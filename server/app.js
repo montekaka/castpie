@@ -44,7 +44,7 @@ app.get('/*', (req, res) => {
 // }));
 
 app.listen(port, () => {
-  console.log(`Exapmle app listening on port ${port}!`);
+  console.log(`App version 1.1 listening on port ${port}!`);
 });
 
 // scheduler
