@@ -3,7 +3,7 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 
 dotenv.config();
-let mongoDB = 'mongodb://206.189.76.54:27017/mongo_polly';
+let mongoDB = 'mongodb://206.189.76.54:27017';
 if( process.env.NODE_ENV === 'development') {
   mongoDB = 'mongodb://127.0.0.1/mongo_polly';
 }
