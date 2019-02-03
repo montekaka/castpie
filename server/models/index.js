@@ -15,7 +15,7 @@ const feedModel = models.Feed;
 promise.then((db) => {
   console.log('woohoo mongoose connected successfully');
 }).catch((err) => {
-  console.log(`${mongoDB} mongoose connection error, please make sure your mongodb is running.`);  
+  console.log(`${mongoDB} mongoose connection error, please make sure your mongodb is running. ${err}`);  
 });
 
 var db = mongoose.connection;
