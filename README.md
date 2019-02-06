@@ -6,6 +6,8 @@ Like many other commuters living and working around Los Angeles, I do not have t
 
 To get started, you simply enter a rss feed, and choose the blogpost you wish to listen.  The article will be converted into audio (.mp3 format) in few seconds.
 
+[DEMO](http://159.65.43.193/feeds/5c5a75a2ac506bfd1544eea2)
+
 ![screehost][screenshot]
 ![castpie][demo]
 
@@ -48,33 +50,6 @@ Delete linked container
 1. GET - /api/feed/:id/articles
 2. GET - /api/articles/:id
 3. GET - /api/articles/:id/mp3
-
-## Todo
-1. Add user model
-  * allow user to sign up and create his profile
-  * allow user to submit rss feeds
-2. Add feed model
-3. Add audiopost model
-
-## Database - Mongodb
-### Models
-1. Feed
-  * url
-  * author
-  * title
-  * description  
-2. Article
-  * feed_id
-  * title
-  * pubDate
-  * url
-  * text
-  * audio
-  * images
-    * image
-      * url
-      * width
-      * height  
 
 [screenshot]: https://pollyaudio.sfo2.digitaloceanspaces.com/assets/assets/screenshot.png
 [demo]: https://pollyaudio.sfo2.digitaloceanspaces.com/assets/assets/castpie.gif
