@@ -6,8 +6,6 @@ Like many other commuters living and working around Los Angeles, I do not have t
 
 To get started, you simply enter a rss feed, and choose the blogpost you wish to listen.  The article will be converted into audio (.mp3 format) in few seconds.
 
-[DEMO](http://159.65.43.193/feeds/5c5a75a2ac506bfd1544eea2)
-
 ![screehost][screenshot]
 ![castpie][demo]
 
