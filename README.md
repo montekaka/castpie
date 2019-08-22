@@ -6,7 +6,7 @@ Like many other commuters living and working around Los Angeles, I do not have t
 
 To get started, you simply enter a rss feed, and choose the blogpost you wish to listen.  The article will be converted into audio (.mp3 format) in few seconds.
 
-![Converted audio demo](https://pollycast.sfo2.digitaloceanspaces.com/development/1560406491832%7C7560111092.mp3)
+[Converted audio demo](https://pollycast.sfo2.digitaloceanspaces.com/development/1560406491832%7C7560111092.mp3)
 
 ## Tech
 1. [AWS Polly](https://aws.amazon.com/polly/)
